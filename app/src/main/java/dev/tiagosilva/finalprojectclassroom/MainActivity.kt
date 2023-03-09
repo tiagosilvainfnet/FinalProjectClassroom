@@ -8,12 +8,17 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private var gson = Gson()
+    lateinit var mGoogleSignClient: GoogleSignInClient;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,10 +30,17 @@ class MainActivity : AppCompatActivity() {
         val listViewTasks = findViewById<android.widget.ListView>(R.id.listViewTasks);
         val createTask = findViewById<android.widget.EditText>(R.id.createTask);
 
-//        val itemList = arrayListOf<String>();
         val itemList = getData();
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, itemList);
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build();
+        mGoogleSignClient = GoogleSignIn.getClient(this, gso);
+
+        val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance();
 
         listViewTasks.adapter = adapter;
         adapter.notifyDataSetChanged()
@@ -65,6 +77,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.logout).setOnClickListener{
+            firebaseAuth.signOut();
+            mGoogleSignClient.signOut();
+
             val activity = Intent(this, LoginScreen::class.java);
             startActivity(activity);
         }

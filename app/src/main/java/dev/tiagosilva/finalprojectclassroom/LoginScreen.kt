@@ -12,8 +12,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginScreen : AppCompatActivity() {
@@ -54,7 +54,7 @@ class LoginScreen : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btnEnter).setOnClickListener {
-            Toast.makeText(this, "Entrando com login normal", Toast.LENGTH_SHORT).show()
+            sign()
         }
     }
 
@@ -93,6 +93,36 @@ class LoginScreen : AppCompatActivity() {
                 startActivity(intent);
                 finish()
             }
+        }
+    }
+
+    private fun notEmpty(): Boolean = etPassword.text.toString().trim().isNotEmpty() &&
+            etEmail.text.toString().trim().isNotEmpty()
+
+    private fun sign(){
+        if(notEmpty()){
+            val userEmail = etEmail.text.toString().trim()
+            val userPassword = etPassword.text.toString().trim()
+
+            firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    val firebaseUser: FirebaseUser? = firebaseAuth.currentUser
+                    if(firebaseUser != null && firebaseUser.isEmailVerified()){
+                        startActivity(Intent(this, MainActivity::class.java))
+                        Toast.makeText(this, "Logado com sucesso", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }else if(firebaseUser != null && !firebaseUser.isEmailVerified()){
+                        firebaseAuth.signOut()
+                        Toast.makeText(this, "Verifique seu email", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "Falha ao logar", Toast.LENGTH_SHORT).show()
+                    }
+                }else{
+                    Toast.makeText(this, "Falha ao logar", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }else{
+            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
         }
     }
 }

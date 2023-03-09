@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FinalProjectClassroom</string>
+    <string name="app_name">Minhas Tarefas</string>
     <string name="registro_com_google">Registro com Google</string>
     <string name="login_com_google">Entrar com Google</string>
 </resources>
