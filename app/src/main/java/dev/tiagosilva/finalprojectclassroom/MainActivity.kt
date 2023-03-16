@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -41,6 +42,11 @@ class MainActivity : AppCompatActivity() {
         mGoogleSignClient = GoogleSignIn.getClient(this, gso);
 
         val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance();
+        val firebaseUser: FirebaseUser? = firebaseAuth.currentUser
+        if(firebaseUser == null){
+            val intent = Intent(this, LoginScreen::class.java);
+            startActivity(intent);
+        }
 
         listViewTasks.adapter = adapter;
         adapter.notifyDataSetChanged()
@@ -81,7 +87,14 @@ class MainActivity : AppCompatActivity() {
             mGoogleSignClient.signOut();
 
             val activity = Intent(this, LoginScreen::class.java);
-            startActivity(activity);
+            startActivity(activity)
+            finish()
+        }
+
+        findViewById<View>(R.id.profile).setOnClickListener{
+            val activity = Intent(this, ProfileActivity::class.java);
+            startActivity(activity)
+            finish()
         }
     }
 
