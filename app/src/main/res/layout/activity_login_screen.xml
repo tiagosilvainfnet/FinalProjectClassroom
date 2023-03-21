@@ -45,10 +45,23 @@
         android:id="@+id/etPassword"
         android:inputType="textPassword"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@id/btnEnter"
+        app:layout_constraintBottom_toTopOf="@id/textEsqueci"
         app:layout_constraintEnd_toEndOf="@+id/etEmail"
         app:layout_constraintStart_toStartOf="@+id/etEmail"
         app:layout_constraintTop_toBottomOf="@+id/etEmail"/>
+
+    <TextView
+        android:id="@+id/textEsqueci"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Esqueci minha senha"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/Signin"
+        app:layout_constraintEnd_toEndOf="@+id/etPassword"
+        app:layout_constraintStart_toStartOf="@+id/etPassword"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
     <Button
         android:id="@+id/btnEnter"
