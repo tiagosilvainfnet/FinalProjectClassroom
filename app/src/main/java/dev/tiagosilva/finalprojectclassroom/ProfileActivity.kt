@@ -119,14 +119,9 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.change_password).setOnClickListener {
-            val u = firebaseAuth.currentUser
-            val emailAddress = u?.email.toString()
-
-            firebaseAuth.sendPasswordResetEmail(emailAddress).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(this, "Email enviado com sucesso!", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            val activity = Intent(this, ChangePasswordActivity::class.java);
+            startActivity(activity)
+            finish()
         }
     }
 

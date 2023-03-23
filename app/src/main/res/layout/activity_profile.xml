@@ -40,7 +40,7 @@
         android:id="@+id/linerLayoutButtonActions"
         android:orientation="vertical">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
             android:layout_width="200dp"
             android:layout_height="200dp"
