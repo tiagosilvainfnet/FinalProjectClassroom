@@ -2,13 +2,17 @@ package dev.tiagosilva.finalprojectclassroom
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.*
 
 class TaskActivity : AppCompatActivity() {
@@ -58,12 +62,49 @@ class TaskActivity : AppCompatActivity() {
     fun loadTask(){
         this.taskId = intent.getStringExtra("id") ?: ""
         if(taskId === "") return
-//        TODO: Carregar tarefa
+
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/tasks/$taskId")
+
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(!snapshot.exists()) return
+
+                findViewById<EditText>(R.id.titulo).setText(snapshot.child("titulo").value.toString())
+                findViewById<EditText>(R.id.descricao).setText(snapshot.child("descricao").value.toString())
+                findViewById<EditText>(R.id.in_date).setText(snapshot.child("data").value.toString())
+                findViewById<EditText>(R.id.in_time).setText(snapshot.child("hora").value.toString())
+            }
+
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@TaskActivity, "Erro ao carregar tarefa", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     fun createUpdateTask(){
         if(taskId !== ""){
-//            TODO: Atualizar tarefa
+            val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/tasks/$taskId")
+
+            ref.addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(!snapshot.exists()) return
+                    val task = snapshot.value as HashMap<String, String>
+
+
+                    task["titulo"] = findViewById<EditText>(R.id.titulo).text.toString()
+                    task["descricao"] = findViewById<EditText>(R.id.descricao).text.toString()
+                    task["data"] = findViewById<EditText>(R.id.in_date).text.toString()
+                    task["hora"] = findViewById<EditText>(R.id.in_time).text.toString()
+
+                    ref.setValue(task)
+                    Toast.makeText(this@TaskActivity, "Tarefa atualizada com sucesso", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@TaskActivity, "Erro ao atualizar tarefa", Toast.LENGTH_SHORT).show()
+                }
+            })
         }else{
             val titulo = findViewById<EditText>(R.id.titulo)
             val descricao = findViewById<EditText>(R.id.titulo)
@@ -81,6 +122,10 @@ class TaskActivity : AppCompatActivity() {
             novoElemento.setValue(task)
 
             Toast.makeText(this, "Tarefa criada com sucesso!", Toast.LENGTH_SHORT).show()
+
+            Intent(this, MainActivity::class.java).also {
+                startActivity(it)
+            }
         }
     }
 }
