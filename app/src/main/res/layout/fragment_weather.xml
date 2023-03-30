@@ -12,11 +12,10 @@
         android:orientation="horizontal">
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="left"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginRight="5dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -30,13 +29,13 @@
                 android:textStyle="bold"
                 />
             <TextView
-                android:id="@+id/bairroCidade"
+                android:id="@+id/descricao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 />
             <TextView
-                android:id="@+id/descricao"
+                android:id="@+id/bairroCidade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
