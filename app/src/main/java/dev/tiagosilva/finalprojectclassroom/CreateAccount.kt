@@ -17,12 +17,13 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
+import dev.tiagosilva.finalprojectclassroom.fragments.SenhaDificuldade
 
 class CreateAccount : AppCompatActivity() {
     lateinit var etEmail: EditText
-    lateinit var etPassword: EditText
+    lateinit var etPassword: SenhaDificuldade
     lateinit var etConfirmPassword: EditText
-    lateinit var createAccountInputArray: Array<EditText>
+    lateinit var createAccountInputArray: Array<Any>
 
     val Req_Code:Int=123;
     lateinit var mGoogleSignInClient: GoogleSignInClient;
@@ -37,7 +38,7 @@ class CreateAccount : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance();
 
         etEmail = findViewById<EditText>(R.id.etEmail)
-        etPassword = findViewById<EditText>(R.id.etPassword)
+        etPassword = supportFragmentManager.findFragmentById(R.id.etPassword) as SenhaDificuldade
         etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
 
         createAccountInputArray = arrayOf(etEmail, etPassword, etConfirmPassword)
@@ -103,8 +104,8 @@ class CreateAccount : AppCompatActivity() {
         }
     }
 
-    private fun notEmpty(): Boolean = etPassword.text.toString().trim().isNotEmpty() &&
-            etEmail.text.toString().trim().isNotEmpty() &&
+    private fun notEmpty(): Boolean = etEmail.text.toString().trim().isNotEmpty() &&
+            etPassword.text.toString().trim().isNotEmpty() &&
             etConfirmPassword.text.toString().trim().isNotEmpty()
 
     private fun verifyIdenticalPassword(): Boolean{

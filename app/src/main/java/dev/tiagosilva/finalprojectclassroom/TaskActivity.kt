@@ -1,31 +1,45 @@
 package dev.tiagosilva.finalprojectclassroom
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import dev.tiagosilva.finalprojectclassroom.databinding.ActivityTaskBinding
+import dev.tiagosilva.finalprojectclassroom.services.NotificationReceiver
 import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 class TaskActivity : AppCompatActivity() {
     val uid = FirebaseAuth.getInstance().currentUser?.uid
     val db_ref = FirebaseDatabase.getInstance().getReference("/users/$uid/tasks")
 
     var taskId: String = ""
+    
+    private lateinit var binding: ActivityTaskBinding;
+    private lateinit var firebaseAnalytics: FirebaseAnalytics;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_task)
+        binding = ActivityTaskBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         loadTask()
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         val in_date = findViewById<EditText>(R.id.in_date)
         val in_time = findViewById<EditText>(R.id.in_time)
@@ -57,6 +71,20 @@ class TaskActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_save_task).setOnClickListener{
             createUpdateTask()
         }
+
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel(){
+        val name = "Notification Channel INFNET"
+        val descriptionText = "Channel for INFNET notifications"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel("INFNET", name, importance).apply {
+            description = descriptionText
+        }
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     fun loadTask(){
@@ -82,7 +110,48 @@ class TaskActivity : AppCompatActivity() {
         })
     }
 
+    private fun scheduleNotification(data: String, hora: String){
+        val intent = Intent(this, NotificationReceiver::class.java)
+        val title = "Título da notificação"
+        val message = "Mensagem da notificação"
+
+        intent.putExtra("title", title)
+        intent.putExtra("message", message)
+
+
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val calendar = Calendar.getInstance()
+//        calendar.add(Calendar.MINUTE, 1)
+        val data_dia = data.substring(0, 2).toInt()
+        val data_mes = data.substring(3, 5).toInt() - 1
+        val data_ano = data.substring(6, 10).toInt()
+        val hora_hora = hora.substring(0, 2).toInt()
+        val hora_minuto = hora.substring(3, 5).toInt()
+
+        calendar.set(
+            data_ano,
+            data_mes,
+            data_dia,
+            hora_hora,
+            hora_minuto,
+            0
+        )
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        }
+        Toast.makeText(this, "Notificação agendada", Toast.LENGTH_SHORT).show()
+    }
+
     fun createUpdateTask(){
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, uid)
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "create_task")
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+
         if(taskId !== ""){
             val ref = FirebaseDatabase.getInstance().getReference("/users/$uid/tasks/$taskId")
 
@@ -90,7 +159,6 @@ class TaskActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if(!snapshot.exists()) return
                     val task = snapshot.value as HashMap<String, String>
-
 
                     task["titulo"] = findViewById<EditText>(R.id.titulo).text.toString()
                     task["descricao"] = findViewById<EditText>(R.id.descricao).text.toString()
@@ -127,5 +195,6 @@ class TaskActivity : AppCompatActivity() {
                 startActivity(it)
             }
         }
+        scheduleNotification(findViewById<EditText>(R.id.in_date).text.toString(), findViewById<EditText>(R.id.in_time).text.toString())
     }
 }

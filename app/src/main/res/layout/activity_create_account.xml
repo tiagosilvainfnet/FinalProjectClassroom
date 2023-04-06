@@ -13,7 +13,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registrar"
+        android:text="@string/registrar"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -24,51 +24,52 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:id="@+id/etEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="E-mail*"
-        android:id="@+id/etEmail"
+        android:hint="@string/e_mail"
         android:inputType="textEmailAddress"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/etPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
-    <EditText
+    <fragment
+        android:id="@+id/etPassword"
+        android:name="dev.tiagosilva.finalprojectclassroom.fragments.SenhaDificuldade"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="Senha*"
-        android:id="@+id/etPassword"
-        android:inputType="textPassword"
-        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/etConfirmPassword"
         app:layout_constraintEnd_toEndOf="@+id/etEmail"
         app:layout_constraintStart_toStartOf="@+id/etEmail"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail"/>
+        app:layout_constraintTop_toBottomOf="@+id/etEmail"
+            />
 
     <EditText
+        android:id="@+id/etConfirmPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="Confirmar senha*"
-        android:id="@+id/etConfirmPassword"
+        android:hint="@string/confirmar_senha"
         android:inputType="textPassword"
         android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/btnCreateAccount"
         app:layout_constraintEnd_toEndOf="@+id/etPassword"
         app:layout_constraintStart_toStartOf="@+id/etPassword"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword"/>
+        app:layout_constraintTop_toBottomOf="@+id/etPassword"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/btnCreateAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Registrar"
+        android:text="@string/registrar"
         app:layout_constraintBottom_toTopOf="@id/textView3"
         app:layout_constraintEnd_toEndOf="@+id/etConfirmPassword"
         app:layout_constraintStart_toStartOf="@+id/etConfirmPassword"
@@ -78,7 +79,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ou"
+        android:text="@string/or"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -93,7 +94,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Entrar"
+        android:text="@string/entrar"
         android:backgroundTint="@color/black"
         app:layout_constraintBottom_toTopOf="@id/textView4"
         app:layout_constraintEnd_toEndOf="@+id/etPassword"
@@ -104,7 +105,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ou"
+        android:text="@string/or"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -119,7 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Registrar com Google"
+        android:text="@string/registrar_com_google"
         android:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/loginView"
